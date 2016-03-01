@@ -1,0 +1,46 @@
+extends layout
+
+block content
+    div(ng-controller="DemoController", class="row")
+        div(class="col-sm-12", style="padding: 32px;")
+            form(novalidate, name="form", ng-submit="send()")
+                div(class="form-group")
+                    input(ng-model="data.username", type="text", class="form-control")
+                div(class="form-group")
+                    input(ng-model="data.password", type="password", class="form-control")
+                div(class="form-group")
+                    button(type="submit", class="btn btn-default") Send
+
+        div(class="col-sm-12")
+            ul
+                li(ng-repeat="item in cart")
+                    span {{item.name}}
+                    span x {{item.count}}
+
+
+block scripts
+    script.
+        (function () {
+            var app = angular.module('app'); //getter => [angular module]
+
+            app.controller('DemoController', [
+                '$scope', '$http', /* service1, service2, ... */
+                function ($scope, $http) {
+
+                    $scope.data = {};
+                    $scope.cart = [];
+
+                    $scope.send = function () {
+                        //get(取得資料、查詢資料), post(新增資料), put(更新資料), delete(刪除資料) (for WebAPI)
+                        $http.post('/login', $scope.data)
+                                .then(function (result) {
+                                    if (result.data.success) {
+                                        $scope.cart = result.data.data;
+                                    } else {
+                                        alert(result.data.message);
+                                    }
+                                });
+                    };
+                }]);
+        })();
+
